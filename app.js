@@ -2,7 +2,10 @@ const express = require('express');
 const connectDB = require('./src/db/connec');
 require('dotenv').config();
 const cors = require('cors');
-const useRouter = require('./src/routes/signup');
+const cookieParser = require('cookie-parser');
+const verifyAuth = require('./src/middlewares/VerifyJWT')
+const useRouter = require('./src/routes/userRoutes');
+const refresh = require('./src/controllers/refreshTokenController');
 
 const app = express();
 
@@ -12,8 +15,13 @@ app.use(express.json());
 
 app.use(express.urlencoded({ extended: false }));
 
+app.use(cookieParser);
+
 //routes
 app.use('/api/v1', useRouter);
+app.use('/refresh', refresh);
+
+app.use(verifyAuth);
 
 
 

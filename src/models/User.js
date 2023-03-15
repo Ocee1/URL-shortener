@@ -23,6 +23,9 @@ const userSchema = new Schema ({
         required: true,
         minLength: 4,
         maxLength: 10,
+    },
+    refreshToken: {
+        type: String
     }
 })
 
