@@ -5,18 +5,18 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const userLogin = async (req, res) => {
-    const { email, psw } = req.body;
-    if(!email || !psw) return res.status(400).json({'message': 'Username and password are required'})
+    const { email, password } = req.body;
+    if(!email || !password) return res.sendStatus(400).json({'message': 'Username and password are required'})
     const user = Users.find({email})
-    if(!user) return res.status(400).json({ 'message': 'User does not exist' })
+    if(!user) return res.sendStatus(400).json({ 'message': 'User does not exist' })
 
-    const match = await bcrypt.compare(psw, user.hashedpsw);
+    const match = await bcrypt.compare(password, user.hashedpsw);
     if (match) {
         //create JWT tokens
-        const accessToken = jswt.sign(
+        const accessToken = jwt.sign(
             {'username': user.email}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '30s'}
         )
-        const refreshToken = jswt.sign(
+        const refreshToken = jwt.sign(
             {'username': user.email}, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '1d'}
         )
         Users.findOneAndUpdate({email}, {refreshToken})

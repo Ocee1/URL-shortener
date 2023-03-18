@@ -1,10 +1,10 @@
 const express = require('express');
+const logout = require('../controllers/logoutController');
 
-const refresh = require('../controllers/refreshTokenController')
 
 const router = express.Router();
 
-router.get('/', refresh);
+router.post('/', logout);
 
 
 module.exports = router;
