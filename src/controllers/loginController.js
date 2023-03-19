@@ -6,20 +6,24 @@ require('dotenv').config();
 
 const userLogin = async (req, res) => {
     const { email, password } = req.body;
+    
     if(!email || !password) return res.sendStatus(400).json({'message': 'Username and password are required'})
-    const user = Users.find({email})
-    if(!user) return res.sendStatus(400).json({ 'message': 'User does not exist' })
-
-    const match = await bcrypt.compare(password, user.hashedpsw);
+    const user = await Users.findOne({email: email})
+    if(!user) {
+        return res.status(400).json({ 'message': 'User does not exist' })
+    }
+    
+    const match = await bcrypt.compare(password, user.password);
     if (match) {
         //create JWT tokens
         const accessToken = jwt.sign(
-            {'username': user.email}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '30s'}
+            {'id': user.id}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '2h'}
         )
         const refreshToken = jwt.sign(
-            {'username': user.email}, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '1d'}
+            {'id': user.id}, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '1d'}
         )
-        Users.findOneAndUpdate({email}, {refreshToken})
+        const updatedUser = await Users.findOneAndUpdate({email}, {refreshToken: refreshToken})
+        console.log(updatedUser)
         res.cookie('jwt', refreshToken, {
             httpOnly: true,
             maxAge: 24*60*60*1000

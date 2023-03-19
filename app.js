@@ -1,41 +1,39 @@
 const express = require('express');
 const app = express();
+const bodyParser = require('body-parser');
 const connectDB = require('./src/db/connec');
 require('dotenv').config();
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 
-
-// const cors = require('cors');
+const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const verifyAuth = require('./src/middlewares/VerifyJWT')
 const signup = require('./src/routes/signupRoute');
 const refresh = require('./src/routes/refresh');
 const logout = require('./src/routes/logout');
 const login = require('./src/routes/loginRoute');
-const getroute = require('./src/routes/getroute');
 
 
 const PORT = process.env.PORT || 4000;
 
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 // app.use(cors);
 
 
 
-// app.use(cookieParser);
+app.use(cookieParser());
 
 //routes
 
-app.use('/try', getroute);
+
 app.use('/api/v1', signup);
 app.use('/api/v1/refresh', refresh);
-app.use('/api/v1/logout', logout);
 app.use('/api/v1/login', login);
 
 
 // app.use(verifyAuth);
-
+app.use('/api/v1/logout', logout);
 
 
 
