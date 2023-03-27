@@ -3,6 +3,8 @@ const app = express();
 const bodyParser = require('body-parser');
 const connectDB = require('./src/db/connec');
 require('dotenv').config();
+const xss = require('xss-clean');
+const helmet = require('helmet');
 
 
 const cors = require('cors');
@@ -19,9 +21,10 @@ const PORT = process.env.PORT || 4000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-// app.use(cors);
+app.use(cors());
 
-
+app.use(xss());
+app.use(helmet());
 
 app.use(cookieParser());
 

@@ -8,7 +8,7 @@ const URLSchema = new Schema({
     shortenedURL: String,
     userID: {
         type: Schema.Types.ObjectId,
-        ref: user,
+        ref: "User",
     },
     date: {
         type: String,
@@ -16,4 +16,4 @@ const URLSchema = new Schema({
     }
 });
 
-module.exports = model(URL, URLSchema);
+module.exports = model('URL', URLSchema);
