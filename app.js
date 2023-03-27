@@ -7,11 +7,12 @@ require('dotenv').config();
 
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const verifyAuth = require('./src/middlewares/VerifyJWT')
 const signup = require('./src/routes/signupRoute');
 const refresh = require('./src/routes/refresh');
 const logout = require('./src/routes/logout');
 const login = require('./src/routes/loginRoute');
+const verify = require('./src/middlewares/VerifyJWT');
+const urlRoute = require('./src/routes/getUrl');
 
 
 const PORT = process.env.PORT || 4000;
@@ -28,20 +29,13 @@ app.use(cookieParser());
 
 
 app.use('/api/v1', signup);
+app.use('/api/v1', urlRoute);
 app.use('/api/v1/refresh', refresh);
 app.use('/api/v1/login', login);
 
-
-// app.use(verifyAuth);
+app.use(verify)
 app.use('/api/v1/logout', logout);
 
-
-
-
-// app.listen(PORT, (err) => {
-//     if(err) console.log(err);
-//     console.log(`Server started on port ${PORT}`)
-// })
 
 const start = async () => {
     try {

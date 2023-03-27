@@ -13,7 +13,8 @@ const logout = async (req, res) => {
     
     // delete refresh token from db
     const logoutuser = await Users.findOneAndUpdate({email: user.email}, {refreshToken: ''});
-    if (logoutuser) return res.status(204).json({"msg": "User successfully logged out"})
+    res.clearCookie('jwt', {httpOnly: true});
+    return res.sendStatus(204)
 };
 
 module.exports = logout;
