@@ -2,6 +2,7 @@ const URL = require('../models/URL');
 const isValid = require('valid-url');
 
 const shortURL = require('../services/shortid');
+const { findOne } = require('../models/URL');
 
 const shortenUrl = async (req, res) => {
     const { longURL } = req.body;
@@ -13,7 +14,7 @@ const shortenUrl = async (req, res) => {
         if(urls) return res.status(400).json({'message': 'URL already exists'})
         const shortID = shortURL(8);
         const shortenedURL = baseUrl + '/' + shortID;
-        url = {
+        const url = {
             longURL,
             shortenedURL,
             'URLcode': shortID
@@ -23,9 +24,31 @@ const shortenUrl = async (req, res) => {
         return res.status(201).json({'data': newUrl})
         
     } catch (error) {
-        return res.status(500).json({'message': error.message})
+        return res.status(500).json({'message': error.message});
     }
 
+};
+
+const customUrl = async (req, res) => {
+    const { longUrl, customRoute } = req.body;
+    const baseUrl = procee.env.BASE_URL;
+    const validUrl = isValid.isUri(longUrl);
+    if(!validUrl) return res.status(400).json({'message': 'The URL is invalid'});
+    try {
+        let urls = await findOne({longURl});
+        let custRoute = await findOne({customRoute});
+        if(urls || custRoute) return res.status(400).json({'message': 'The Url already or route already exists'});
+        const shortenedURL = `${baseUrl}/${customRoute}`;
+        const url = {
+            longURL,
+            shortenedURL,
+            'URLcode': customRoute
+        };
+        const newUrl = await new URL(url).save();
+        return res.status(201).json({'data': newUrl})
+    } catch (error) {
+        return res.status(500).json({'message': error.message})
+    }
 };
 
 const getURL = async (req, res) => {
@@ -40,4 +63,4 @@ const getURL = async (req, res) => {
     }
 };
 
-module.exports = { shortenUrl, getURL };
+module.exports = { shortenUrl, getURL, customUrl };

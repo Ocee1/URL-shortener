@@ -6,6 +6,7 @@ const URLSchema = new Schema({
     URLcode: String,
     longURl: String,
     shortenedURL: String,
+    customUrl: String,
     userID: {
         type: Schema.Types.ObjectId,
         ref: "User",

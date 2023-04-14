@@ -1,5 +1,5 @@
 const express = require('express');
-const { shortenUrl, getURL } = require('../controllers/urlController');
+const { shortenUrl, getURL, customUrl } = require('../controllers/urlController');
 
 
 const router = express.Router();
@@ -10,6 +10,8 @@ router.route('/').get( (req, res) => {
 
 router.route('/short')
 .post(shortenUrl)
-.get(getURL)
+.get(getURL);
+
+router.post('/custom', customUrl)
 
 module.exports = router;
