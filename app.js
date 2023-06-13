@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const swaggerDocs = require('./src/services/swagger')
 const bodyParser = require('body-parser');
 const connectDB = require('./src/db/connec');
 require('dotenv').config();
@@ -17,7 +18,11 @@ const verify = require('./src/middlewares/VerifyJWT');
 const urlRoute = require('./src/routes/getUrl');
 
 
+
+
 const PORT = process.env.PORT || 4000;
+
+swaggerDocs(app, PORT);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -48,7 +53,7 @@ const start = async () => {
             console.log(`Server started on port ${PORT}`)
         })
     } catch (error) {
-        console.log('error')
+        console.log(error)
     }
 }
 start();

@@ -16,20 +16,24 @@ const userLogin = async (req, res) => {
     const match = await bcrypt.compare(password, user.password);
     if (match) {
         //create JWT tokens
-        const accessToken = jwt.sign(
+        const accessToken = await jwt.sign(
             {'id': user.id}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '2h'}
         )
-        const refreshToken = jwt.sign(
-            {'id': user.id}, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '1d'}
+        const refreshToken = await jwt.sign(
+            {'id': user.id,
+            "email": user.email }, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '1d'}
         )
+        
         const updatedUser = await Users.findOneAndUpdate({email}, {refreshToken: refreshToken})
+        
+        await updatedUser.save();
         console.log(updatedUser)
         res.cookie('jwt', refreshToken, {
             httpOnly: true,
             maxAge: 24*60*60*1000
         });
-
-        res.json({accessToken})
+        let toks = updatedUser.refreshToken;
+        res.json({accessToken, toks});
     }
     else {
         res.sendStatus(401);

@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 
 const signup = async (req, res) => {
     const {firstname, lastname, email, password, phoneNum} = req.body;
-    console.log(req.body)
+    // console.log(req.body)
     if(!email || !password) return res.status(400).json({ 'messsage': 'email and password required' })
 
     let existingUser = await Users.findOne({email: email});
@@ -16,11 +16,12 @@ const signup = async (req, res) => {
             lastname,
             email,
             phoneNum,
-            password: hashedpsw
+            password: hashedpsw,
+            "refreshToken": '',
         }
 
         await Users.create(newUser)
-        console.log(newUser)
+        // console.log(newUser)
         return res.json({ "message": "Account created successfully"})
     } catch (error) {
         return res.status(500).json({'message': error.message})

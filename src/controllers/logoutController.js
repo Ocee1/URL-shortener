@@ -8,7 +8,7 @@ const logout = async (req, res) => {
     const user = await Users.findOne({refreshToken})
     if(!user) {
         res.clearCookie('jwt', {httpOnly: true});
-        return res.sendStatus(204);
+        return res.sendStatus(403);
     }
     
     // delete refresh token from db
